@@ -103,9 +103,6 @@ body.before-load {
   margin-bottom: 0.5em;
   font-size: 1.2rem;
 }
-#scroll-section-2 .main-message {
-  font-size: 3.5rem;
-}
 .description {
   max-width: 1000px;
   margin: 0 auto;
@@ -128,14 +125,6 @@ body.before-load {
   width: 1px;
   height: 100px;
   background: ivory;
-}
-#scroll-section-2 .b {
-  top: 10%;
-  left: 40%;
-}
-#scroll-section-2 .c {
-  top: 15%;
-  left: 45%;
 }
 .mid-message {
   max-width: 1000px;
@@ -170,8 +159,7 @@ body.before-load {
 }
 #show-scene-0 #scroll-section-0 .sticky-elem,
 #show-scene-1 #scroll-section-1 .sticky-elem,
-#show-scene-2 #scroll-section-2 .sticky-elem,
-#show-scene-3 #scroll-section-3 .sticky-elem {
+#show-scene-3 #scroll-section-2 .sticky-elem {
   display: block;
   will-change: transform, opacity;
 }
@@ -188,7 +176,7 @@ body.before-load {
   top: 50%;
   left: 50%;
 }
-#scroll-section-3 {
+#scroll-section-2 {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -249,9 +237,6 @@ body.before-load {
   animation: loading-circle-ani 1s infinite;
   /* transition: 1s; */
 }
-/* .loading-circle:hover circle {
-	stroke-dashoffset: -157;
-} */
 
 .normal-content {
   margin-bottom: 10rem;
@@ -271,21 +256,11 @@ body.before-load {
   .description strong {
     font-size: 6rem;
   }
-  #scroll-section-2 .main-message {
-    font-size: 6vw;
-  }
   .main-message small {
     font-size: 1.5vw;
   }
   .sticky-elem.desc-message {
     width: 20%;
-  }
-  #scroll-section-2 .b {
-    top: 20%;
-    left: 53%;
-  }
-  #scroll-section-2 .c {
-    left: 55%;
   }
   .mid-message {
     width: 1000px;
