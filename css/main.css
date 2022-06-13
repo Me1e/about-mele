@@ -80,7 +80,7 @@ body.before-load {
   position: relative;
   top: -10vh;
   z-index: 5;
-  font-size: 4rem;
+  font-size: 3rem;
   text-align: center;
 }
 .main-message {
@@ -90,8 +90,12 @@ body.before-load {
   top: 45vh;
   margin: 5px 0;
   height: 3em;
-  font-size: 2.5rem;
+  font-size: 2rem;
   opacity: 0;
+}
+.main-message.b,
+.main-message.d {
+  top: 42vh;
 }
 .main-message p {
   font-weight: bold;
