@@ -200,7 +200,7 @@ body.before-load {
   bottom: 0;
   left: 0;
   z-index: 100;
-  background: ivory;
+  background: #333;
   opacity: 0;
   transition: 0.5s;
 }
