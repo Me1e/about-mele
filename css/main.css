@@ -256,6 +256,21 @@ body.before-load {
   height: 100vh;
   position: fixed;
 }
+.react {
+  color: dodgerblue;
+}
+.next {
+  color: orange;
+}
+.type {
+  color: aqua;
+}
+.node {
+  color: greenyellow;
+}
+.db {
+  color: green;
+}
 
 @media (min-width: 1024px) {
   #scroll-section-0 h1 {
