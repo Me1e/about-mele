@@ -60,7 +60,7 @@
     {
       // 2
       type: "sticky",
-      heightNum: 5,
+      heightNum: 4,
       scrollHeight: 0,
       objs: {
         container: document.querySelector("#scroll-section-2"),
@@ -71,7 +71,7 @@
         context: document
           .querySelector("#scroll-section-2 .image-blend-canvas")
           .getContext("2d"),
-        imagesPath: ["./3/1.jpg", "./3/2.jpg"],
+        imagesPath: ["./2/chvu_mobile.jpg", "./2/chvu_pc.jpg"],
         images: [],
       },
       values: {
@@ -87,7 +87,7 @@
     {
       // 3
       type: "sticky",
-      heightNum: 5,
+      heightNum: 4,
       scrollHeight: 0,
       objs: {
         container: document.querySelector("#scroll-section-3"),
@@ -98,7 +98,7 @@
         context: document
           .querySelector("#scroll-section-3 .image-blend-canvas")
           .getContext("2d"),
-        imagesPath: ["./3/1.jpg", "./3/2.jpg"],
+        imagesPath: ["./2/chvu_mobile.jpg", "./2/chvu_pc.jpg"],
         images: [],
       },
       values: {
@@ -114,7 +114,7 @@
     {
       // 4
       type: "sticky",
-      heightNum: 5,
+      heightNum: 4,
       scrollHeight: 0,
       objs: {
         container: document.querySelector("#scroll-section-4"),
@@ -125,7 +125,7 @@
         context: document
           .querySelector("#scroll-section-4 .image-blend-canvas")
           .getContext("2d"),
-        imagesPath: ["./3/1.jpg", "./3/2.jpg"],
+        imagesPath: ["./2/chvu_mobile.jpg", "./2/chvu_pc.jpg"],
         images: [],
       },
       values: {
