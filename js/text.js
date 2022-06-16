@@ -48,17 +48,35 @@
       finishedLoadingImages: false,
     },
     {
-      // 1
-      type: "normal",
-      // heightNum: 5, // type normal에서는 필요 없음
+      // 2
+
+      type: "sticky",
+      heightNum: 4,
       scrollHeight: 0,
       objs: {
         container: document.querySelector("#scroll-section-1"),
-        content: document.querySelector("#scroll-section-1 .description"),
+        canvasCaption: document.querySelector(
+          "#scroll-section-1 .canvas-caption"
+        ),
+        canvas: document.querySelector("#scroll-section-1 .image-blend-canvas"),
+        context: document
+          .querySelector("#scroll-section-1 .image-blend-canvas")
+          .getContext("2d"),
+        imagesPath: ["./2/chvu_mobile.jpg", "./2/chvu_pc.jpg"],
+        images: [],
+      },
+      values: {
+        rect1X: [0, 0, { start: 0, end: 0 }],
+        rect2X: [0, 0, { start: 0, end: 0 }],
+        blendHeight: [0, 0, { start: 0, end: 0 }],
+        canvas_scale: [0, 0, { start: 0, end: 0 }],
+        canvasCaption_opacity: [0, 1, { start: 0, end: 0 }],
+        canvasCaption_translateY: [20, 0, { start: 0, end: 0 }],
+        rectStartY: 0,
       },
     },
     {
-      // 2
+      // 4
       type: "sticky",
       heightNum: 4,
       scrollHeight: 0,
@@ -71,7 +89,7 @@
         context: document
           .querySelector("#scroll-section-2 .image-blend-canvas")
           .getContext("2d"),
-        imagesPath: ["./2/chvu_mobile.jpg", "./2/chvu_pc.jpg"],
+        imagesPath: ["./2/design_m.jpg", "./2/design.jpg"],
         images: [],
       },
       values: {
@@ -98,7 +116,7 @@
         context: document
           .querySelector("#scroll-section-3 .image-blend-canvas")
           .getContext("2d"),
-        imagesPath: ["./2/chvu_mobile.jpg", "./2/chvu_pc.jpg"],
+        imagesPath: ["./2/jbnu_m.jpg", "./2/jbnu.jpg"],
         images: [],
       },
       values: {
@@ -112,30 +130,13 @@
       },
     },
     {
-      // 4
-      type: "sticky",
-      heightNum: 4,
+      // 1
+      type: "normal",
+      // heightNum: 5, // type normal에서는 필요 없음
       scrollHeight: 0,
       objs: {
         container: document.querySelector("#scroll-section-4"),
-        canvasCaption: document.querySelector(
-          "#scroll-section-4 .canvas-caption"
-        ),
-        canvas: document.querySelector("#scroll-section-4 .image-blend-canvas"),
-        context: document
-          .querySelector("#scroll-section-4 .image-blend-canvas")
-          .getContext("2d"),
-        imagesPath: ["./2/chvu_mobile.jpg", "./2/chvu_pc.jpg"],
-        images: [],
-      },
-      values: {
-        rect1X: [0, 0, { start: 0, end: 0 }],
-        rect2X: [0, 0, { start: 0, end: 0 }],
-        blendHeight: [0, 0, { start: 0, end: 0 }],
-        canvas_scale: [0, 0, { start: 0, end: 0 }],
-        canvasCaption_opacity: [0, 1, { start: 0, end: 0 }],
-        canvasCaption_translateY: [20, 0, { start: 0, end: 0 }],
-        rectStartY: 0,
+        content: document.querySelector("#scroll-section-4 .description"),
       },
     },
   ];
@@ -164,7 +165,7 @@
         sceneInfo[i].scrollHeight = sceneInfo[i].heightNum * window.innerHeight;
       } else if (sceneInfo[i].type === "normal") {
         sceneInfo[i].scrollHeight =
-          sceneInfo[i].objs.content.offsetHeight + window.innerHeight * 0.5;
+          sceneInfo[i].objs.content.offsetHeight + window.innerHeight * 1;
       }
       sceneInfo[
         i
@@ -328,11 +329,9 @@
           )}%, 0)`;
         }
 
-        break;
-      case 1:
         if (scrollRatio > 0.9) {
-          const objs = sceneInfo[2].objs;
-          const values = sceneInfo[2].values;
+          const objs = sceneInfo[1].objs;
+          const values = sceneInfo[1].values;
           const widthRatio = window.innerWidth / objs.canvas.width;
           const heightRatio = window.innerHeight / objs.canvas.height;
           let canvasScaleRatio;
@@ -375,6 +374,185 @@
             objs.canvas.height
           );
         }
+        break;
+      case 1:
+        (() => {
+          let step = 0;
+          // 가로/세로 모두 꽉 차게 하기 위해 여기서 세팅(계산 필요)
+          const widthRatio = window.innerWidth / objs.canvas.width;
+          const heightRatio = window.innerHeight / objs.canvas.height;
+          let canvasScaleRatio;
+
+          if (widthRatio <= heightRatio) {
+            // 캔버스보다 브라우저 창이 홀쭉한 경우
+            canvasScaleRatio = heightRatio;
+          } else {
+            // 캔버스보다 브라우저 창이 납작한 경우
+            canvasScaleRatio = widthRatio;
+          }
+
+          objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
+          objs.context.fillStyle = "rgb(29, 29, 31)";
+          objs.context.drawImage(objs.images[0], 0, 0);
+
+          // 캔버스 사이즈에 맞춰 가정한 innerWidth와 innerHeight
+          const recalculatedInnerWidth =
+            document.body.offsetWidth / canvasScaleRatio;
+          const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio;
+
+          if (!values.rectStartY) {
+            // values.rectStartY = objs.canvas.getBoundingClientRect().top;
+            values.rectStartY =
+              objs.canvas.offsetTop +
+              (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2;
+            values.rect1X[2].start = window.innerHeight / 2 / scrollHeight;
+            values.rect2X[2].start = window.innerHeight / 2 / scrollHeight;
+            values.rect1X[2].end = values.rectStartY / scrollHeight;
+            values.rect2X[2].end = values.rectStartY / scrollHeight;
+          }
+
+          const whiteRectWidth = recalculatedInnerWidth * 0.15;
+          values.rect1X[0] = (objs.canvas.width - recalculatedInnerWidth) / 2;
+          values.rect1X[1] = values.rect1X[0] - whiteRectWidth;
+          values.rect2X[0] =
+            values.rect1X[0] + recalculatedInnerWidth - whiteRectWidth;
+          values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
+
+          // 좌우 흰색 박스 그리기
+          objs.context.fillRect(
+            parseInt(calcValues(values.rect1X, currentYOffset)),
+            0,
+            parseInt(whiteRectWidth),
+            objs.canvas.height
+          );
+          objs.context.fillRect(
+            parseInt(calcValues(values.rect2X, currentYOffset)),
+            0,
+            parseInt(whiteRectWidth),
+            objs.canvas.height
+          );
+
+          if (scrollRatio < values.rect1X[2].end) {
+            step = 1;
+            objs.canvas.classList.remove("sticky");
+          } else {
+            step = 2;
+            // 이미지 블렌드
+            // values.blendHeight: [ 0, 0, { start: 0, end: 0 } ]
+            values.blendHeight[0] = 0;
+            values.blendHeight[1] = objs.canvas.height;
+            values.blendHeight[2].start = values.rect1X[2].end;
+            values.blendHeight[2].end = values.blendHeight[2].start + 0.2;
+            const blendHeight = calcValues(values.blendHeight, currentYOffset);
+
+            objs.context.drawImage(
+              objs.images[1],
+              0,
+              objs.canvas.height - blendHeight,
+              objs.canvas.width,
+              blendHeight,
+              0,
+              objs.canvas.height - blendHeight,
+              objs.canvas.width,
+              blendHeight
+            );
+
+            objs.canvas.classList.add("sticky");
+            objs.canvas.style.top = `${
+              -(objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2
+            }px`;
+
+            if (scrollRatio > values.blendHeight[2].end) {
+              values.canvas_scale[0] = canvasScaleRatio;
+              values.canvas_scale[1] =
+                document.body.offsetWidth / (1.5 * objs.canvas.width);
+              values.canvas_scale[2].start = values.blendHeight[2].end;
+              values.canvas_scale[2].end = values.canvas_scale[2].start + 0.2;
+
+              objs.canvas.style.transform = `scale(${calcValues(
+                values.canvas_scale,
+                currentYOffset
+              )})`;
+              objs.canvas.style.marginTop = 0;
+            }
+
+            if (
+              scrollRatio > values.canvas_scale[2].end &&
+              values.canvas_scale[2].end > 0
+            ) {
+              objs.canvas.classList.remove("sticky");
+              objs.canvas.style.marginTop = `${scrollHeight * 0.4}px`;
+
+              values.canvasCaption_opacity[2].start =
+                values.canvas_scale[2].end;
+              values.canvasCaption_opacity[2].end =
+                values.canvasCaption_opacity[2].start + 0.1;
+              values.canvasCaption_translateY[2].start =
+                values.canvasCaption_opacity[2].start;
+              values.canvasCaption_translateY[2].end =
+                values.canvasCaption_opacity[2].end;
+              objs.canvasCaption.style.opacity = calcValues(
+                values.canvasCaption_opacity,
+                currentYOffset
+              );
+              objs.canvasCaption.style.transform = `translate3d(0, ${calcValues(
+                values.canvasCaption_translateY,
+                currentYOffset
+              )}%, 0)`;
+            } else {
+              objs.canvasCaption.style.opacity =
+                values.canvasCaption_opacity[0];
+            }
+
+            if (scrollRatio > 0.9) {
+              const objs = sceneInfo[2].objs;
+              const values = sceneInfo[2].values;
+              const widthRatio = window.innerWidth / objs.canvas.width;
+              const heightRatio = window.innerHeight / objs.canvas.height;
+              let canvasScaleRatio;
+
+              if (widthRatio <= heightRatio) {
+                // 캔버스보다 브라우저 창이 홀쭉한 경우
+                canvasScaleRatio = heightRatio;
+              } else {
+                // 캔버스보다 브라우저 창이 납작한 경우
+                canvasScaleRatio = widthRatio;
+              }
+
+              objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
+              objs.context.fillStyle = "rgb(29, 29, 31)";
+              objs.context.drawImage(objs.images[0], 0, 0);
+
+              // 캔버스 사이즈에 맞춰 가정한 innerWidth와 innerHeight
+              const recalculatedInnerWidth =
+                document.body.offsetWidth / canvasScaleRatio;
+              const recalculatedInnerHeight =
+                window.innerHeight / canvasScaleRatio;
+
+              const whiteRectWidth = recalculatedInnerWidth * 0.15;
+              values.rect1X[0] =
+                (objs.canvas.width - recalculatedInnerWidth) / 2;
+              values.rect1X[1] = values.rect1X[0] - whiteRectWidth;
+              values.rect2X[0] =
+                values.rect1X[0] + recalculatedInnerWidth - whiteRectWidth;
+              values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
+
+              // 좌우 흰색 박스 그리기
+              objs.context.fillRect(
+                parseInt(values.rect1X[0]),
+                0,
+                parseInt(whiteRectWidth),
+                objs.canvas.height
+              );
+              objs.context.fillRect(
+                parseInt(values.rect2X[0]),
+                0,
+                parseInt(whiteRectWidth),
+                objs.canvas.height
+              );
+            }
+          }
+        })();
         break;
       case 2:
         (() => {
@@ -682,185 +860,9 @@
                 values.canvasCaption_opacity[0];
             }
           }
-
-          if (scrollRatio > 0.9) {
-            const objs = sceneInfo[4].objs;
-            const values = sceneInfo[4].values;
-            const widthRatio = window.innerWidth / objs.canvas.width;
-            const heightRatio = window.innerHeight / objs.canvas.height;
-            let canvasScaleRatio;
-
-            if (widthRatio <= heightRatio) {
-              // 캔버스보다 브라우저 창이 홀쭉한 경우
-              canvasScaleRatio = heightRatio;
-            } else {
-              // 캔버스보다 브라우저 창이 납작한 경우
-              canvasScaleRatio = widthRatio;
-            }
-
-            objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
-            objs.context.fillStyle = "rgb(29, 29, 31)";
-            objs.context.drawImage(objs.images[0], 0, 0);
-
-            // 캔버스 사이즈에 맞춰 가정한 innerWidth와 innerHeight
-            const recalculatedInnerWidth =
-              document.body.offsetWidth / canvasScaleRatio;
-            const recalculatedInnerHeight =
-              window.innerHeight / canvasScaleRatio;
-
-            const whiteRectWidth = recalculatedInnerWidth * 0.15;
-            values.rect1X[0] = (objs.canvas.width - recalculatedInnerWidth) / 2;
-            values.rect1X[1] = values.rect1X[0] - whiteRectWidth;
-            values.rect2X[0] =
-              values.rect1X[0] + recalculatedInnerWidth - whiteRectWidth;
-            values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
-
-            // 좌우 흰색 박스 그리기
-            objs.context.fillRect(
-              parseInt(values.rect1X[0]),
-              0,
-              parseInt(whiteRectWidth),
-              objs.canvas.height
-            );
-            objs.context.fillRect(
-              parseInt(values.rect2X[0]),
-              0,
-              parseInt(whiteRectWidth),
-              objs.canvas.height
-            );
-          }
         })();
         break;
       case 4:
-        (() => {
-          let step = 0;
-          // 가로/세로 모두 꽉 차게 하기 위해 여기서 세팅(계산 필요)
-          const widthRatio = window.innerWidth / objs.canvas.width;
-          const heightRatio = window.innerHeight / objs.canvas.height;
-          let canvasScaleRatio;
-
-          if (widthRatio <= heightRatio) {
-            // 캔버스보다 브라우저 창이 홀쭉한 경우
-            canvasScaleRatio = heightRatio;
-          } else {
-            // 캔버스보다 브라우저 창이 납작한 경우
-            canvasScaleRatio = widthRatio;
-          }
-
-          objs.canvas.style.transform = `scale(${canvasScaleRatio})`;
-          objs.context.fillStyle = "rgb(29, 29, 31)";
-          objs.context.drawImage(objs.images[0], 0, 0);
-
-          // 캔버스 사이즈에 맞춰 가정한 innerWidth와 innerHeight
-          const recalculatedInnerWidth =
-            document.body.offsetWidth / canvasScaleRatio;
-          const recalculatedInnerHeight = window.innerHeight / canvasScaleRatio;
-
-          if (!values.rectStartY) {
-            // values.rectStartY = objs.canvas.getBoundingClientRect().top;
-            values.rectStartY =
-              objs.canvas.offsetTop +
-              (objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2;
-            values.rect1X[2].start = window.innerHeight / 2 / scrollHeight;
-            values.rect2X[2].start = window.innerHeight / 2 / scrollHeight;
-            values.rect1X[2].end = values.rectStartY / scrollHeight;
-            values.rect2X[2].end = values.rectStartY / scrollHeight;
-          }
-
-          const whiteRectWidth = recalculatedInnerWidth * 0.15;
-          values.rect1X[0] = (objs.canvas.width - recalculatedInnerWidth) / 2;
-          values.rect1X[1] = values.rect1X[0] - whiteRectWidth;
-          values.rect2X[0] =
-            values.rect1X[0] + recalculatedInnerWidth - whiteRectWidth;
-          values.rect2X[1] = values.rect2X[0] + whiteRectWidth;
-
-          // 좌우 흰색 박스 그리기
-          objs.context.fillRect(
-            parseInt(calcValues(values.rect1X, currentYOffset)),
-            0,
-            parseInt(whiteRectWidth),
-            objs.canvas.height
-          );
-          objs.context.fillRect(
-            parseInt(calcValues(values.rect2X, currentYOffset)),
-            0,
-            parseInt(whiteRectWidth),
-            objs.canvas.height
-          );
-
-          if (scrollRatio < values.rect1X[2].end) {
-            step = 1;
-            objs.canvas.classList.remove("sticky");
-          } else {
-            step = 2;
-            // 이미지 블렌드
-            // values.blendHeight: [ 0, 0, { start: 0, end: 0 } ]
-            values.blendHeight[0] = 0;
-            values.blendHeight[1] = objs.canvas.height;
-            values.blendHeight[2].start = values.rect1X[2].end;
-            values.blendHeight[2].end = values.blendHeight[2].start + 0.2;
-            const blendHeight = calcValues(values.blendHeight, currentYOffset);
-
-            objs.context.drawImage(
-              objs.images[1],
-              0,
-              objs.canvas.height - blendHeight,
-              objs.canvas.width,
-              blendHeight,
-              0,
-              objs.canvas.height - blendHeight,
-              objs.canvas.width,
-              blendHeight
-            );
-
-            objs.canvas.classList.add("sticky");
-            objs.canvas.style.top = `${
-              -(objs.canvas.height - objs.canvas.height * canvasScaleRatio) / 2
-            }px`;
-
-            if (scrollRatio > values.blendHeight[2].end) {
-              values.canvas_scale[0] = canvasScaleRatio;
-              values.canvas_scale[1] =
-                document.body.offsetWidth / (1.5 * objs.canvas.width);
-              values.canvas_scale[2].start = values.blendHeight[2].end;
-              values.canvas_scale[2].end = values.canvas_scale[2].start + 0.2;
-
-              objs.canvas.style.transform = `scale(${calcValues(
-                values.canvas_scale,
-                currentYOffset
-              )})`;
-              objs.canvas.style.marginTop = 0;
-            }
-
-            if (
-              scrollRatio > values.canvas_scale[2].end &&
-              values.canvas_scale[2].end > 0
-            ) {
-              objs.canvas.classList.remove("sticky");
-              objs.canvas.style.marginTop = `${scrollHeight * 0.4}px`;
-
-              values.canvasCaption_opacity[2].start =
-                values.canvas_scale[2].end;
-              values.canvasCaption_opacity[2].end =
-                values.canvasCaption_opacity[2].start + 0.1;
-              values.canvasCaption_translateY[2].start =
-                values.canvasCaption_opacity[2].start;
-              values.canvasCaption_translateY[2].end =
-                values.canvasCaption_opacity[2].end;
-              objs.canvasCaption.style.opacity = calcValues(
-                values.canvasCaption_opacity,
-                currentYOffset
-              );
-              objs.canvasCaption.style.transform = `translate3d(0, ${calcValues(
-                values.canvasCaption_translateY,
-                currentYOffset
-              )}%, 0)`;
-            } else {
-              objs.canvasCaption.style.opacity =
-                values.canvasCaption_opacity[0];
-            }
-          }
-        })();
         break;
     }
   }
@@ -959,6 +961,12 @@
 
     // Scene 2 이미지블렌드 캔버스에 쓰는 이미지 세팅
     let imgElem;
+    for (let i = 0; i < sceneInfo[1].objs.imagesPath.length; i++) {
+      imgElem = new Image();
+      imgElem.src = sceneInfo[1].objs.imagesPath[i];
+      sceneInfo[1].objs.images.push(imgElem);
+    }
+
     for (let i = 0; i < sceneInfo[2].objs.imagesPath.length; i++) {
       imgElem = new Image();
       imgElem.src = sceneInfo[2].objs.imagesPath[i];
@@ -969,12 +977,6 @@
       imgElem = new Image();
       imgElem.src = sceneInfo[3].objs.imagesPath[i];
       sceneInfo[3].objs.images.push(imgElem);
-    }
-
-    for (let i = 0; i < sceneInfo[4].objs.imagesPath.length; i++) {
-      imgElem = new Image();
-      imgElem.src = sceneInfo[4].objs.imagesPath[i];
-      sceneInfo[4].objs.images.push(imgElem);
     }
     // 중간에서 새로고침 했을 경우 자동 스크롤로 제대로 그려주기
     let tempYOffset = yOffset;
